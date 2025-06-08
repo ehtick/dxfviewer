@@ -10,6 +10,7 @@ type LwPolyline struct {
 	Num      int // 90
 	Closed   bool
 	Vertices [][]float64
+	Bulges   []float64 // 42
 }
 
 // IsEntity is for Entity interface.
@@ -28,6 +29,7 @@ func NewLwPolyline(size int) *LwPolyline {
 		Num:      size,
 		Closed:   false,
 		Vertices: vs,
+		Bulges:   make([]float64, size),
 	}
 	return l
 }
@@ -45,6 +47,10 @@ func (l *LwPolyline) Format(f format.Formatter) {
 	for i := 0; i < l.Num; i++ {
 		for j := 0; j < 2; j++ {
 			f.WriteFloat((j+1)*10, l.Vertices[i][j])
+		}
+
+		if l.Bulges[i] != 0 {
+			f.WriteFloat(42, l.Bulges[i])
 		}
 	}
 }
@@ -80,4 +86,13 @@ func (l *LwPolyline) BBox() ([]float64, []float64) {
 		}
 	}
 	return mins, maxs
+}
+
+// Bulge computes the center and the ray of the arc to reach the vertex.
+func (l LwPolyline) Bulge(index int) ([]float64, float64) {
+	if index > len(l.Vertices)-1 || index < 1 {
+		return nil, 0
+	}
+
+	return bulge(l.Bulges[index], l.Vertices[index-1], l.Vertices[index])
 }

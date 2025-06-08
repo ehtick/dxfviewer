@@ -708,6 +708,7 @@ func ParseLwPolyline(d *drawing.Drawing, data [][2]string) (entity.Entity, error
 				for i := 0; i < val; i++ {
 					lw.Vertices[i] = make([]float64, 2)
 				}
+				lw.Bulges = make([]float64, val)
 			})
 		case "10":
 			if lw.Num > ind {
@@ -726,6 +727,14 @@ func ParseLwPolyline(d *drawing.Drawing, data [][2]string) (entity.Entity, error
 				})
 			} else {
 				err = fmt.Errorf("LWPOLYLINE extra vertices")
+			}
+		case "42":
+			if lw.Num > ind {
+				err = setFloat(dt, func(val float64) {
+					lw.Bulges[ind] = val
+				})
+			} else {
+				err = fmt.Errorf("LWPOLYLINE extra vertice buldge")
 			}
 		case "70":
 			err = setInt(dt, func(val int) {
@@ -855,6 +864,8 @@ func ParseVertex(d *drawing.Drawing, data [][2]string) (entity.Entity, error) {
 			err = setFloat(dt, func(val float64) { v.Coord[1] = val })
 		case "30":
 			err = setFloat(dt, func(val float64) { v.Coord[2] = val })
+		case "42":
+			err = setFloat(dt, func(val float64) { v.Buldge = val })
 		}
 		if err != nil {
 			return v, err
