@@ -7,8 +7,9 @@ import (
 // Vertex represents VERTEX Entity.
 type Vertex struct {
 	*entity
-	Flag  int
-	Coord []float64
+	Flag   int
+	Coord  []float64
+	Buldge float64
 }
 
 // IsEntity is for Entity interface.
@@ -39,6 +40,10 @@ func (v *Vertex) Format(f format.Formatter) {
 		f.WriteFloat((i+1)*10, v.Coord[i])
 	}
 	f.WriteInt(70, v.Flag)
+
+	if v.Buldge != 0 {
+		f.WriteFloat(42, v.Buldge)
+	}
 }
 
 // String outputs data using default formatter.

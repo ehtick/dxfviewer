@@ -101,3 +101,12 @@ func (p *Polyline) BBox() ([]float64, []float64) {
 	}
 	return mins, maxs
 }
+
+// Bulge computes the center and the ray of the arc to reach the vertex.
+func (p Polyline) Bulge(index int) ([]float64, float64) {
+	if index > len(p.Vertices)-2 {
+		return nil, 0
+	}
+
+	return bulge(p.Vertices[index].Buldge, p.Vertices[index].Coord, p.Vertices[index+1].Coord)
+}
